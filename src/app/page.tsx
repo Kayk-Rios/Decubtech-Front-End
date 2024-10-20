@@ -1,13 +1,13 @@
-import Altentic from "@/components/templates/Atentic";
 import Login from "@/components/templates/Login";
+import Pagina from "@/components/templates/Pagina";
 
 
 export default function Home() {
   return (
     <div className="#">
-     <Altentic>
+     <Pagina>
          <Login/>
-     </Altentic>
+     </Pagina>
     </div>
   );
 }
