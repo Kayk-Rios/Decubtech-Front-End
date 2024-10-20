@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Entrar from "../Ui/Entrar";
 import ImageEnfermeira2 from "../Ui/ImageEnfermeira2";
 
@@ -23,7 +24,9 @@ export default function Login() {
                 placeholder="Senha"
               />
             </div>
-            <Entrar destino="Entrar" />
+            <Link href='/layout/setor'>
+              <Entrar destino="Entrar" />
+            </Link>
           </form>
         </div>        
         <div className="flex-shrink-0">
