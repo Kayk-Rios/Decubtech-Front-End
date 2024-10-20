@@ -1,9 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+Link (https://decubtech.netlify.app/)
 
-First, run the development server:
+## Use para instala dependencias
+```bash
+npm install
+```
 
+## Use para iniciar com
 ```bash
 npm run dev
 # or
@@ -14,7 +17,7 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ 
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
