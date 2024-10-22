@@ -23,10 +23,10 @@ export default function Menu(){
               <h2>Menu</h2>
               <ul className="modal-list">
                 <Link href='/layout/setor'>
-                  <li>SETOR</li>
+                  <li className=" border-b-2 ">SETOR</li>
                 </Link>
-                <Link  href='/layout/posicoes'>
-                  <li>POSIÇÕES</li>
+                <Link  href='#'>
+                  <li className="border-b-2  ">POSIÇÕES</li>
                 </Link>
              
               </ul>

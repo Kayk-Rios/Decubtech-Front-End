@@ -5,7 +5,7 @@ import ImageEnfermeira2 from "../Ui/ImageEnfermeira2";
 export default function Login() {
   return (
     <>
-      <div className="flex h-screen">
+      <div className="flex h-screen  ">
         <div className="flex-grow flex items-center justify-center">
           <form className="flex flex-col gap-4 w-[300px]">
             <div className="  flex flex-col">

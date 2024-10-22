@@ -31,7 +31,7 @@ body {
 .entrar, .setor{
   background-color: #046419;
   color: white;
-  padding: 5px 20px;
+  
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
