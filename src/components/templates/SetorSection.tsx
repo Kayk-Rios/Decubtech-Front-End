@@ -19,7 +19,7 @@ export default function Setor() {
           })}
         </select>
         <Link href='/layout/posicoes'>
-            <Entrar destino="Confirma" />
+            <Entrar className="entrar" destino="Confirma" />
         </Link>
     
       </div>

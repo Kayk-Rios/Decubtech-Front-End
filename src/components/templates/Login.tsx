@@ -25,7 +25,7 @@ export default function Login() {
               />
             </div>
             <Link href='/layout/setor'>
-              <Entrar destino="Entrar" />
+              <Entrar className="entrar" destino="Entrar" />
             </Link>
           </form>
         </div>        
