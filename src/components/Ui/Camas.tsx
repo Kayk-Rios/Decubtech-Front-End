@@ -35,6 +35,7 @@ export default function ImagePosicoes() {
                   <li className="border-b-2">Posição: Ventral</li>
                   <li className="border-b-2">Tempo: -35 min</li>
                 </ul>
+                <button className="bg-white p-2 rounded-md text-black">Trocar</button>
               </div>
             </div>
           )}
