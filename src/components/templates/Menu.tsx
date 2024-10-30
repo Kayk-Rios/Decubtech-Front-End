@@ -25,7 +25,7 @@ export default function Menu(){
                 <Link href='/layout/setor'>
                   <li className=" border-b-2 ">SETOR</li>
                 </Link>
-                <Link  href='/layout/paciente'>
+                <Link  href='/layout/posicoes'>
                   <li className="border-b-2  ">POSIÇÕES</li>
                 </Link>
              
