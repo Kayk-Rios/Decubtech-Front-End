@@ -13,7 +13,7 @@ export default function ImagePosicoes() {
   const listaCamas = ListaCamas;
 
   return (
-    <div className="grid grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {listaCamas.map((posicao) => (
         <div key={posicao.id} className="flex justify-evenly">
           <Image
