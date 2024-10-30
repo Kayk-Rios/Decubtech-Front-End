@@ -1,9 +1,12 @@
 import Menu from "@/components/templates/Menu";
 import Pagina from "@/components/templates/Pagina";
+import Camas from "@/components/Ui/Camas";
+ 
 import Entrar from "@/components/Ui/Entrar";
 import Link from "next/link";
 
 export default function PacientePagina() {
+  
   return (
     <>
       <div>
@@ -15,6 +18,9 @@ export default function PacientePagina() {
             <Link href="/" className=" mb-10">
               <h1 className="sair rounded-md ">Sair</h1>
             </Link>
+          </div>
+          <div>
+            <Camas/>
           </div>
         </Pagina>
       </div>
