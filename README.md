@@ -31,6 +31,7 @@ bun dev
 ![Captura de tela 2024-10-30 143338](https://github.com/user-attachments/assets/5b33964f-b890-41d0-82a4-d62edbf1ca22)
 
 Mobile:
+
 ![Captura de tela 2024-10-30 143110](https://github.com/user-attachments/assets/8bda7c46-d36c-4552-9d45-24213a86aca0)
 
 ![Captura de tela 2024-10-30 143144](https://github.com/user-attachments/assets/5de52488-5592-482a-b153-f494041c1c91)
