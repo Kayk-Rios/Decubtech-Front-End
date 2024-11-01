@@ -10,59 +10,73 @@ import Cama8 from "@/assets/Cama1.png"
  
 
   interface Posicoes {
-    id: number;
-    imagem: any;
+    Leitoid: number;
+    imagem?: any;
+    id?:string;
+
   }
  
    const images : Posicoes[]= [
     {
-      id: 1,
-      imagem: Cama1
+      Leitoid: 1,
+      imagem: Cama1,
+      id: "cama1"
     },
     {
-      id: 2,
-      imagem: Cama2
+      Leitoid: 2,
+      imagem: Cama2,
+      id: "cama2"
     },
     {
-      id: 3,
-      imagem: Cama3
+      Leitoid: 3,
+      imagem: Cama3,
+      id: "cama3"
     },
     {
-      id: 4,
-      imagem: Cama4
+      Leitoid: 4,
+      imagem: Cama4,
+      id: "cama4"
     },
     {
-      id: 5,
-      imagem: Cama5 
+      Leitoid: 5,
+      imagem: Cama5,
+      id: "cama5"
     },
     {
-      id: 6,
-      imagem: Cama6
+      Leitoid: 6,
+      imagem: Cama6,
+      id: "cama6"
     },
     {
-      id: 7,
-      imagem: Cama7
+      Leitoid: 7,
+      imagem: Cama7,
+      id: "cama7"
     },
     {
-      id: 8,
-      imagem: Cama8 
+      Leitoid: 8,
+      imagem: Cama8,
+      id:"cama8"
     }
     ,
     {
-      id: 9,
-      imagem: Cama5 
+      Leitoid: 9,
+      imagem: Cama5,
+      id: "cama9"
     },
     {
-      id: 10,
-      imagem: Cama6
+      Leitoid: 10,
+      imagem: Cama6,
+      id: "cama10"
     },
     {
-      id: 11,
-      imagem: Cama7
+      Leitoid: 11,
+      imagem: Cama7,
+    id: "cama11"
     },
     {
-      id: 12,
-      imagem: Cama8 
+      Leitoid: 12,
+      imagem: Cama8,
+      id: "cama12"
     }
   ];
   export default  images;
