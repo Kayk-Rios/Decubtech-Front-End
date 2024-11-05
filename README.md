@@ -18,6 +18,8 @@ bun dev
 ```
 
  Web:
+Link vídeo demonstração do sistema: (https://drive.google.com/file/d/1xmDyPmVLAHQ4S2ZcIeiZNnPHELowQRGF/view?usp=sharing) 
+ 
 ![Captura de tela 2024-10-20 024339](https://github.com/user-attachments/assets/b5d941f9-d756-4d54-9ccd-a1a3a5785022)
 
 ![Captura de tela 2024-10-20 024408](https://github.com/user-attachments/assets/27c0291d-1483-4aa5-93a2-0c1dda08b852)
