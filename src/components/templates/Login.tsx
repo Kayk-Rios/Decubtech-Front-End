@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Entrar from "../Ui/Entrar";
 import ImageEnfermeira2 from "../Ui/ImageEnfermeira2";
+import InputMask from "react-input-mask";
+
  
 
 export default function Login() {
   const [rotation, setRotation] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(false);
-
+ 
   useEffect(() => {
     const handleResize = () => {
       setShowSkeleton(window.innerWidth < 640); // sm breakpoint
@@ -43,7 +45,12 @@ export default function Login() {
           <div className={`mt-8 ${showSkeleton ? 'mt-20' : ''}`}>
             <form className="flex flex-col gap-4 w-[300px]">
               <div className="flex flex-col">
-                <input type="text" required className="coren rounded-full h-14 text-center" placeholder="Coren" />
+                <InputMask
+                  mask="Coren-aa-999.999-aaa"
+                  placeholder="Coren-XX 000.000-XXX"
+                  required
+                  className="coren rounded-full h-14 text-center"
+                />
               </div>
               <div className="flex flex-col pb-40">
                 <input type="password" required className="senha rounded-full h-12 text-center" placeholder="Senha" />
