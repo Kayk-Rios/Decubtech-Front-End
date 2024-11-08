@@ -14,6 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState(""); // Para armazenar a senha
   const [error, setError] = useState(""); // Para armazenar mensagens de erro
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,6 +35,7 @@ export default function Login() {
   }, []);
 
   const handleLogin = async (e: any) => {
+    setLoading(true); 
     e.preventDefault();
     try {
       const response = await axios.post("https://back-end-decubtech.onrender.com/users/login", {
@@ -56,6 +58,8 @@ export default function Login() {
       }
     } catch (err) {
       setError("Credenciais inválidas");
+    }finally {
+      setLoading(false); // Finaliza o carregamento, escondendo o Skeleton
     }
   };
 
@@ -63,7 +67,7 @@ export default function Login() {
     <>
       <div className="flex h-screen pb-36">
         <div className="flex-grow flex flex-col items-center justify-center gap-28">
-          {showSkeleton && (
+          { showSkeleton && (
             <div
               style={{
                 position: "relative",
@@ -152,8 +156,12 @@ export default function Login() {
                 <div className="text-red-500 text-center mb-4">{error}</div>
               )}
 
-              <button type="submit" className="entrar rounded-full">
-                Entrar
+              <button
+               type="submit"
+              className="entrar rounded-full"
+              disabled={loading} 
+              >
+               {loading ? 'Carregando...' : 'Entrar'} 
               </button>
             </form>
           </div>
