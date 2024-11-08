@@ -62,7 +62,7 @@ export default function PacientePagina() {
       <div>
         <Pagina>
           <div  onClick={handleOpenModal}>
-            <Entrar destino="Pacientes" className=" flex text-slate-200 justify-center bg-pink-400 mt-[4%] ml-[2%]" />
+            <Entrar destino="Adicionar Leito" className=" flex text-slate-200 justify-center bg-pink-400 mt-[4%] ml-[2%]" />
           </div>
           <div className="flex flex-col w-16 ml-[83%] gap-3">
             <Menu />
