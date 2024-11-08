@@ -47,16 +47,16 @@ export default function Setor() {
       <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center h-[680px] ">
         
         <section className=" flex ml-[40px] flex-col items-center gap-6 justify-center  ">
-         <div>
+         <div >
             {setores.length === 0 ? (
-              <p>Carregando.</p> 
+              <p>Carregando...</p> 
             ) : (
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded setor"
                 value={selectedSetor} 
                 onChange={handleSetorChange} 
               >
-                <option value="">Selecione um setor</option>
+                <option value=""   >Selecione um setor</option>
                 {setores.map((setor) => (
                   <option key={setor.id} value={setor.id}>
                     {setor.name}
