@@ -1,7 +1,11 @@
 'use client';
 import Image from "next/image";
-import ListaCamas from "@/components/data/ListaCamas";
+import ImagemCama1 from "@/assets/Cama1.png";
+import ImagemCama2 from "@/assets/Cama2.png";
+import ImagemCama3 from "@/assets/Cama3.png";
 import { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 export default function ImagePosicoes() {
   const [modalCamaId, setModalCamaId] = useState<number | null>(null); // controla qual modal de cama está aberto
@@ -10,13 +14,26 @@ export default function ImagePosicoes() {
   const [timeLeftMap, setTimeLeftMap] = useState<{ [key: number]: number | null }>({}); // tempo restante por leito
   const [positionMap, setPositionMap] = useState<{ [key: number]: string | null }>({}); // posição escolhida para cada leito
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null); // posição temporária selecionada para confirmar
+  const [leitos, setLeitos] = useState<any[]>([]); // estado para armazenar os leitos
+
+  useEffect(() => {
+    const setorId = Cookies.get('selectedSetor');
+    if (setorId) {
+      // Faz a requisição para obter os leitos do setor selecionado
+      axios.get(`https://back-end-decubtech.onrender.com/leitos/setor/${setorId}`)
+        .then(response => {
+          setLeitos(response.data); // Atualiza o estado com os leitos retornados pela API
+        })
+        .catch(error => {
+          console.error("Erro ao obter os leitos:", error);
+        });
+    }
+  }, []);
 
   const toggleModal = (id: number) => {
     setModalCamaId(modalCamaId === id ? null : id); // abre/fecha modal individualmente
     setShowOptionsModal(false); // oculta o modal de opções ao fechar o modal
   };
-
-  const listaCamas = ListaCamas;
 
   const handleShowOptionsModal = () => {
     setShowOptionsModal(true); // exibe o modal de opções
@@ -31,12 +48,12 @@ export default function ImagePosicoes() {
     setVibrateCamaId(null); // reinicia a vibração, se já existir
     setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); // armazena a posição confirmada
     setSelectedPosition(null); // reinicia a posição selecionada
-    setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 1 min  / 7200 2 horas
+    setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas
 
-    // Inicia a vibração após 2 horas
+    // Inicia a vibração após 1 minuto
     setTimeout(() => {
       setVibrateCamaId(id);
-    }, 60000); // 1 min  / 7200000 2 horas
+    }, 60000); // 60000 ms = 1 min / 7200000 2 horas
   };
 
   // Contagem regressiva para cada leito
@@ -58,6 +75,38 @@ export default function ImagePosicoes() {
     return () => clearInterval(interval);
   }, []);
 
+  // Definição das imagens para os estados dos leitos
+  const leitoImages = {
+    initial: ImagemCama1,
+    meio: ImagemCama2,
+    final: ImagemCama3
+  };
+  
+  // Função para determinar qual imagem exibir com base no tempo
+  const getImageBasedOnTime = (leitoId: number) => {
+    const timeLeft = timeLeftMap[leitoId];
+  
+    if (timeLeft === null) {
+      // Imagem quando o tempo expirou
+      return leitoImages.final;
+    }
+
+    const totalTime = 60; // 60 para 1 min  / 120 para 2 horas
+    const halfTime = totalTime / 2;
+  
+    if (timeLeft > halfTime) {
+      // Imagem para o tempo inicial até a metade
+      return leitoImages.initial;
+    } else if (timeLeft >= 0) {
+      // Imagem para quando o tempo estiver pela metade
+      return leitoImages.meio;
+    } else {
+      // Imagem quando o tempo expirou
+      return leitoImages.initial;
+    }
+    
+  };
+
   // Formata o tempo em HH:MM:SS
   const formatTime = (time: number | null) => {
     if (time === null) return "Tempo expirado";
@@ -71,103 +120,105 @@ export default function ImagePosicoes() {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {listaCamas.map((posicao) => (
-        <div key={posicao.Leitoid} className="flex justify-evenly">
-          <Image
-            src={posicao.imagem}
-            width={150}
-            height={150}
-            alt={`Imagem da cama ${posicao.Leitoid}`}
-            onClick={() => toggleModal(posicao.Leitoid)}
-            className={vibrateCamaId === posicao.Leitoid ? "vibrate" : ""}
-          />
-          {modalCamaId === posicao.Leitoid && (
-            <div className="modal-overlay" onClick={() => toggleModal(posicao.Leitoid)}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <span className="close-button" onClick={() => toggleModal(posicao.Leitoid)}>
-                  &times;
-                </span>
-                <h2 className="text-white">Informações do Paciente</h2>
-                <h2 className="text-white pt-8">Leito: {posicao.Leitoid}</h2>
-                <ul className="modal-list">
-                  <li className="border-b-2">Posição: {positionMap[posicao.Leitoid] || "Não selecionada"}</li>
-                  <li className="border-b-2">
-                    Tempo: {formatTime(timeLeftMap[posicao.Leitoid])}
-                  </li>
-                </ul>
-                <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
-                  Trocar
-                </button>
+      {leitos.length > 0 ? (
+        leitos.map((leito) => (
+          <div key={leito.id} className="flex justify-evenly">
+            <Image
+              src={getImageBasedOnTime(leito.id)} // Usando a função para obter a imagem correta
+              width={150}
+              height={150}
+              alt={`Imagem da cama ${leito.id}`}
+              onClick={() => toggleModal(leito.id)}
+              className={vibrateCamaId === leito.id ? "vibrate" : ""}
+            />
+            {modalCamaId === leito.id && (
+              <div className="modal-overlay" onClick={() => toggleModal(leito.id)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <span className="close-button" onClick={() => toggleModal(leito.id)}>&times;</span>
+                  <h2 className="text-white">Informações do Leito</h2>
+                  <h2 className="text-white pt-8">Leito: {leito.number}</h2>
+                  <ul className="modal-list">
+                    <li className="border-b-2">Posição: {positionMap[leito.id] || "Não selecionada"}</li>
+                    <li className="border-b-2">
+                      Tempo: {formatTime(timeLeftMap[leito.id])}
+                    </li>
+                  </ul>
+                  <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
+                    Trocar
+                  </button>
 
-                {/* Modal de Opções */}
-                {showOptionsModal && (
-                  <div className="modal-overlay" onClick={handleCloseOptionsModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                      <span className="close-button" onClick={handleCloseOptionsModal}>
-                        &times;
-                      </span>
-                      <h2 className="text-black">Escolher opção</h2>
-                      <form
-                        className="mt-4"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          handleConfirmPosition(posicao.Leitoid);
-                        }}
-                      >
-                        <div className="flex flex-col text-white">
-                          <label>
-                            <input
-                              type="radio"
-                              name="position"
-                              value="Decúbito Dorsal"
-                              onChange={(e) => setSelectedPosition(e.target.value)}
-                            /> Decúbito Dorsal
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              name="position"
-                              value="Decúbito Ventral"
-                              onChange={(e) => setSelectedPosition(e.target.value)}
-                            /> Decúbito Ventral
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              name="position"
-                              value="Decúbito Lateral Direito"
-                              onChange={(e) => setSelectedPosition(e.target.value)}
-                            /> Decúbito Lateral Direito
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              name="position"
-                              value="Decúbito Lateral Esquerdo"
-                              onChange={(e) => setSelectedPosition(e.target.value)}
-                            /> Decúbito Lateral Esquerdo
-                          </label>
-                          <label>
-                            <input
-                              type="radio"
-                              name="position"
-                              value="Decúbito Fowler"
-                              onChange={(e) => setSelectedPosition(e.target.value)}
-                            /> Decúbito Fowler
-                          </label>
-                        </div>
-                        <button type="submit" className="bg-white text-black p-2 rounded-md mt-4">
-                          Confirmar
-                        </button>
-                      </form>
+                  {/* Modal de Opções */}
+                  {showOptionsModal && (
+                    <div className="modal-overlay" onClick={handleCloseOptionsModal}>
+                      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <span className="close-button" onClick={handleCloseOptionsModal}>
+                          &times;
+                        </span>
+                        <h2 className="text-black">Escolher opção</h2>
+                        <form
+                          className="mt-4"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleConfirmPosition(leito.id);
+                          }}
+                        >
+                          <div className="flex flex-col text-white">
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Dorsal"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Dorsal
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Ventral"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Ventral
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Lateral Direito"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Lateral Direito
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Lateral Esquerdo"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Lateral Esquerdo
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Fowler"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Fowler
+                            </label>
+                          </div>
+                          <button type="submit" className="bg-white text-black p-2 rounded-md mt-4">
+                            Confirmar
+                          </button>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+          </div>
+        ))
+      ) : (
+        <p>Carregando leitos...</p>
+      )}
     </div>
   );
 }
