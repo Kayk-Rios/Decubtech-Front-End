@@ -2,7 +2,7 @@
 
 interface EntrarProps {
     destino: string;
-    className: string;
+    className?: string;
 }
 export default function ComponentName(props : EntrarProps){
     return(  
