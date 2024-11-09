@@ -32,6 +32,8 @@ Link vídeo demonstração do sistema: (https://drive.google.com/file/d/1xmDyPmV
 
 ![Captura de tela 2024-10-30 143338](https://github.com/user-attachments/assets/5b33964f-b890-41d0-82a4-d62edbf1ca22)
 
+![criar](https://github.com/user-attachments/assets/d1abcd76-6f94-4ae7-bb2e-d7da6b1ea5d4)
+
 Mobile:
 
 ![Captura de tela 2024-10-30 143110](https://github.com/user-attachments/assets/8bda7c46-d36c-4552-9d45-24213a86aca0)
