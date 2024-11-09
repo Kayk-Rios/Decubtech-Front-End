@@ -1,5 +1,5 @@
 
-Link (https://decubtech.netlify.app/)
+Link  (https://decubtech.site/)
 
 ## Use para instala dependencias
 ```bash
