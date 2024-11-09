@@ -139,6 +139,7 @@ export default function Login() {
                   value={username}
                   className="coren rounded-full h-14 text-center"
                   onChange={(e) => setUsername(e.target.value)} // Atualiza o estado
+                  autoComplete="username"
                 />
               </div>
               <div className="flex flex-col pb-40">
@@ -149,6 +150,7 @@ export default function Login() {
                   placeholder="Senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)} // Atualiza o estado
+                  autoComplete="current-password"
                 />
               </div>
 
