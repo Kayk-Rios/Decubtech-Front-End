@@ -22,7 +22,7 @@ export default function Setor() {
     
     if (userId) {
       axios
-        .get(`https://back-end-decubtech.onrender.com/setores/${userId}`) 
+        .get(`https://superb-adventure-production.up.railway.app/setores/${userId}`) 
         .then((response) => {
           setSetores(response.data);
         })

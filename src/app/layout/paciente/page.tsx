@@ -37,7 +37,7 @@ export default function PacientePagina() {
     try {
       // Envia a requisição POST
       const response = await axios.post(
-        "https://back-end-decubtech.onrender.com/leitos",
+        "https://superb-adventure-production.up.railway.app/leitos",
         data
       );
       console.log("Leito criado:", response.data); // Exibe a resposta no console
