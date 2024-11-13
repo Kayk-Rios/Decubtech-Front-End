@@ -3,18 +3,29 @@ import Image from "next/image";
 import ImagemCama1 from "@/assets/Cama1.png";
 import ImagemCama2 from "@/assets/Cama2.png";
 import ImagemCama3 from "@/assets/Cama3.png";
+import Musica from "../../assets/AlertSound.mp3"
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Howl } from 'howler';
+
 
 export default function ImagePosicoes() {
+
+  
+
   const [modalCamaId, setModalCamaId] = useState<number | null>(null); // controla qual modal de cama está aberto
   const [showOptionsModal, setShowOptionsModal] = useState(false); // controla a exibição do modal de opções
-  const [vibrateCamaId, setVibrateCamaId] = useState<number | null>(null); // controla qual cama está vibrando
+  const [vibrateCamaIds, setVibrateCamaIds] = useState<number[]>([]); // controla qual cama está vibrando
   const [timeLeftMap, setTimeLeftMap] = useState<{ [key: number]: number | null }>({}); // tempo restante por leito
   const [positionMap, setPositionMap] = useState<{ [key: number]: string | null }>({}); // posição escolhida para cada leito
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null); // posição temporária selecionada para confirmar
   const [leitos, setLeitos] = useState<any[]>([]); // estado para armazenar os leitos
+
+  const alertSound = new Howl({
+    src: [Musica], // Certifique-se de que o caminho está correto
+    volume: 0.7,
+  });
 
   useEffect(() => {
     const setorId = Cookies.get('selectedSetor');
@@ -45,14 +56,14 @@ export default function ImagePosicoes() {
 
   const handleConfirmPosition = (id: number) => {
     setShowOptionsModal(false); // fecha o modal de opções
-    setVibrateCamaId(null); // reinicia a vibração, se já existir
+    setVibrateCamaIds((prev) =>prev.filter((item) => item !== id)) // reinicia a vibração, se já existir
     setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); // armazena a posição confirmada
     setSelectedPosition(null); // reinicia a posição selecionada
     setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas
 
     // Inicia a vibração após 1 minuto
     setTimeout(() => {
-      setVibrateCamaId(id);
+      setVibrateCamaIds((prev) => [...prev, id]);
     }, 60000); // 60000 ms = 1 min / 7200000 2 horas
   };
 
@@ -66,6 +77,8 @@ export default function ImagePosicoes() {
             newTimeLeftMap[id]! -= 1; // decrementa o tempo em 1 segundo
           } else if (newTimeLeftMap[id] === 0) {
             newTimeLeftMap[id] = null; // reseta o tempo ao chegar em zero
+            alertSound.play()
+            setVibrateCamaIds((prev) => [...prev, parseInt(id)]);
           }
         }
         return newTimeLeftMap;
@@ -129,7 +142,7 @@ export default function ImagePosicoes() {
               height={150}
               alt={`Imagem da cama ${leito.id}`}
               onClick={() => toggleModal(leito.id)}
-              className={vibrateCamaId === leito.id ? "vibrate" : ""}
+              className={vibrateCamaIds.includes(leito.id) ? "vibrate" : ""}
             />
             {modalCamaId === leito.id && (
               <div className="modal-overlay" onClick={() => toggleModal(leito.id)}>
@@ -207,6 +220,7 @@ export default function ImagePosicoes() {
                           <button type="submit" className="bg-white text-black p-2 rounded-md mt-4">
                             Confirmar
                           </button>
+              
                         </form>
                       </div>
                     </div>
