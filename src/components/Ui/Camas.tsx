@@ -3,7 +3,7 @@ import Image from "next/image";
 import ImagemCama1 from "@/assets/Cama1.png";
 import ImagemCama2 from "@/assets/Cama2.png";
 import ImagemCama3 from "@/assets/Cama3.png";
-import Musica from "../../assets/AlertSound.mp3"
+import Musica from "../../assets/ALERTA2.mp3"
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -55,12 +55,15 @@ export default function ImagePosicoes() {
   };
 
   const handleConfirmPosition = (id: number) => {
+    if (alertSound.playing()) {
+      alertSound.stop();
+    }
     setShowOptionsModal(false); // fecha o modal de opções
     setVibrateCamaIds((prev) =>prev.filter((item) => item !== id)) // reinicia a vibração, se já existir
     setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); // armazena a posição confirmada
     setSelectedPosition(null); // reinicia a posição selecionada
     setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas
-
+    alertSound.pause()
     // Inicia a vibração após 1 minuto
     setTimeout(() => {
       setVibrateCamaIds((prev) => [...prev, id]);
@@ -77,7 +80,10 @@ export default function ImagePosicoes() {
             newTimeLeftMap[id]! -= 1; // decrementa o tempo em 1 segundo
           } else if (newTimeLeftMap[id] === 0) {
             newTimeLeftMap[id] = null; // reseta o tempo ao chegar em zero
-            alertSound.play()
+            if (alertSound.playing()) {
+              alertSound.stop();
+            }
+            alertSound.play();
             setVibrateCamaIds((prev) => [...prev, parseInt(id)]);
           }
         }
