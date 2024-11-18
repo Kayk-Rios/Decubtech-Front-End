@@ -14,72 +14,97 @@ export default function ImagePosicoes() {
 
   
 
-  const [modalCamaId, setModalCamaId] = useState<number | null>(null); // controla qual modal de cama está aberto
-  const [showOptionsModal, setShowOptionsModal] = useState(false); // controla a exibição do modal de opções
-  const [vibrateCamaIds, setVibrateCamaIds] = useState<number[]>([]); // controla qual cama está vibrando
-  const [timeLeftMap, setTimeLeftMap] = useState<{ [key: number]: number | null }>({}); // tempo restante por leito
-  const [positionMap, setPositionMap] = useState<{ [key: number]: string | null }>({}); // posição escolhida para cada leito
-  const [selectedPosition, setSelectedPosition] = useState<string | null>(null); // posição temporária selecionada para confirmar
-  const [leitos, setLeitos] = useState<any[]>([]); // estado para armazenar os leitos
+  const [modalCamaId, setModalCamaId] = useState<number | null>(null); 
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [vibrateCamaIds, setVibrateCamaIds] = useState<number[]>([]); 
+  const [timeLeftMap, setTimeLeftMap] = useState<{ [key: number]: number | null }>({}); 
+  const [positionMap, setPositionMap] = useState<{ [key: number]: string | null }>({});
+  const [selectedPosition, setSelectedPosition] = useState<string | null>(null); 
+  const [leitos, setLeitos] = useState<any[]>([]); 
+  const [externalLeitos, setExternalLeitos] = useState<any[]>([]); 
 
   const alertSound = new Howl({
-    src: [Musica], // Certifique-se de que o caminho está correto
+    src: [Musica], 
     volume: 0.7,
   });
 
   useEffect(() => {
-    const setorId = Cookies.get('selectedSetor');
-    if (setorId) {
-      // Faz a requisição para obter os leitos do setor selecionado
-      axios.get(`https://superb-adventure-production.up.railway.app/leitos/setor/${setorId}`)
+   
+    const selectedSetor = Cookies.get('selectedSetor');
+    const selectedExternalSetor = Cookies.get('selectedExternalSetor'); 
+    const username = Cookies.get('username');
+
+    if (selectedSetor) {
+      // Requisição para leitos internos da nossa api
+      axios.get(`https://superb-adventure-production.up.railway.app/leitos/setor/${selectedSetor}`)
         .then(response => {
-          setLeitos(response.data); // Atualiza o estado com os leitos retornados pela API
+          setLeitos(response.data);
         })
         .catch(error => {
-          console.error("Erro ao obter os leitos:", error);
+          console.error("Erro ao obter os leitos internos:", error);
         });
     }
+    if (selectedExternalSetor && username) {
+      // Requisição para leitos externos internos da api de terceiros
+      axios.post(`https://superb-adventure-production.up.railway.app/external/leitos/${selectedExternalSetor}`, { username })
+        .then(response => {
+          setExternalLeitos(response.data);
+        })
+        .catch(error => {
+          console.error("Erro ao obter os leitos externos:", error);
+        });
+    }
+
   }, []);
 
+
+
   const toggleModal = (id: number) => {
-    setModalCamaId(modalCamaId === id ? null : id); // abre/fecha modal individualmente
-    setShowOptionsModal(false); // oculta o modal de opções ao fechar o modal
+    setModalCamaId(modalCamaId === id ? null : id);
+    setShowOptionsModal(false);
   };
 
   const handleShowOptionsModal = () => {
-    setShowOptionsModal(true); // exibe o modal de opções
+    setShowOptionsModal(true);
   };
 
   const handleCloseOptionsModal = () => {
-    setShowOptionsModal(false); // oculta o modal de opções
+    setShowOptionsModal(false);
   };
 
   const handleConfirmPosition = (id: number) => {
     if (alertSound.playing()) {
       alertSound.stop();
     }
-    setShowOptionsModal(false); // fecha o modal de opções
-    setVibrateCamaIds((prev) =>prev.filter((item) => item !== id)) // reinicia a vibração, se já existir
-    setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); // armazena a posição confirmada
-    setSelectedPosition(null); // reinicia a posição selecionada
+    setShowOptionsModal(false); 
+    setVibrateCamaIds((prev) =>prev.filter((item) => item !== id)) 
+    setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); 
+    setSelectedPosition(null);
     setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas
     alertSound.pause()
-    // Inicia a vibração após 1 minuto
+  
     setTimeout(() => {
       setVibrateCamaIds((prev) => [...prev, id]);
-    }, 60000); // 60000 ms = 1 min / 7200000 2 horas
+    }, 60000);  // 60000 ms = 1 min / 7200000 2 horas
   };
 
-  // Contagem regressiva para cada leito
+
   useEffect(() => {
+
+
+    const savedTimeLeftMap = JSON.parse(localStorage.getItem('timeLeftMap') || '{}');
+    if (savedTimeLeftMap) {
+      setTimeLeftMap(savedTimeLeftMap);
+    }
+  
     const interval = setInterval(() => {
       setTimeLeftMap((prev) => {
         const newTimeLeftMap = { ...prev };
         for (const id in newTimeLeftMap) {
           if (newTimeLeftMap[id] !== null && newTimeLeftMap[id]! > 0) {
-            newTimeLeftMap[id]! -= 1; // decrementa o tempo em 1 segundo
+            newTimeLeftMap[id]! -= 1; 
           } else if (newTimeLeftMap[id] === 0) {
-            newTimeLeftMap[id] = null; // reseta o tempo ao chegar em zero
+            newTimeLeftMap[id] = null;
             if (alertSound.playing()) {
               alertSound.stop();
             }
@@ -87,6 +112,7 @@ export default function ImagePosicoes() {
             setVibrateCamaIds((prev) => [...prev, parseInt(id)]);
           }
         }
+        localStorage.setItem('timeLeftMap', JSON.stringify(newTimeLeftMap));
         return newTimeLeftMap;
       });
     }, 1000);
@@ -94,19 +120,18 @@ export default function ImagePosicoes() {
     return () => clearInterval(interval);
   }, []);
 
-  // Definição das imagens para os estados dos leitos
+  
   const leitoImages = {
     initial: ImagemCama1,
     meio: ImagemCama2,
     final: ImagemCama3
   };
   
-  // Função para determinar qual imagem exibir com base no tempo
+  
   const getImageBasedOnTime = (leitoId: number) => {
     const timeLeft = timeLeftMap[leitoId];
   
     if (timeLeft === null) {
-      // Imagem quando o tempo expirou
       return leitoImages.final;
     }
 
@@ -114,19 +139,17 @@ export default function ImagePosicoes() {
     const halfTime = totalTime / 2;
   
     if (timeLeft > halfTime) {
-      // Imagem para o tempo inicial até a metade
+     
       return leitoImages.initial;
     } else if (timeLeft >= 0) {
-      // Imagem para quando o tempo estiver pela metade
+     
       return leitoImages.meio;
     } else {
-      // Imagem quando o tempo expirou
       return leitoImages.initial;
     }
     
   };
 
-  // Formata o tempo em HH:MM:SS
   const formatTime = (time: number | null) => {
     if (time === null) return "Tempo expirado";
     const hours = Math.floor(time / 3600);
@@ -139,11 +162,12 @@ export default function ImagePosicoes() {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      {leitos.length > 0 ? (
+     
+      {Cookies.get('selectedSetor') && leitos.length > 0 ? (
         leitos.map((leito) => (
           <div key={leito.id} className="flex justify-evenly">
             <Image
-              src={getImageBasedOnTime(leito.id)} // Usando a função para obter a imagem correta
+              src={getImageBasedOnTime(leito.id)} 
               width={150}
               height={150}
               alt={`Imagem da cama ${leito.id}`}
@@ -166,7 +190,7 @@ export default function ImagePosicoes() {
                     Trocar
                   </button>
 
-                  {/* Modal de Opções */}
+                 
                   {showOptionsModal && (
                     <div className="modal-overlay" onClick={handleCloseOptionsModal}>
                       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -236,7 +260,100 @@ export default function ImagePosicoes() {
             )}
           </div>
         ))
-      ) : (
+      )  : Cookies.get('selectedExternalSetor') && externalLeitos.length > 0 ? (
+        externalLeitos.map((leito) => (
+          <div key={leito.id} className="flex justify-evenly">
+            <Image
+              src={getImageBasedOnTime(leito.id)} 
+              width={150}
+              height={150}
+              alt={`Imagem do leito externo ${leito.id}`}
+              onClick={() => toggleModal(leito.id)}
+              className={vibrateCamaIds.includes(leito.id) ? "vibrate" : ""}
+            />
+            {modalCamaId === leito.id && (
+              <div className="modal-overlay" onClick={() => toggleModal(leito.id)}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <span className="close-button" onClick={() => toggleModal(leito.id)}>&times;</span>
+                  <h2 className="text-white">Leito Externo</h2>
+                  <h2 className="text-white pt-8">Leito: {leito.nome}</h2>
+                  <ul className="modal-list">
+                    <li className="border-b-2">Posição: {positionMap[leito.id] || "Não selecionada"}</li>
+                    <li className="border-b-2">
+                      Tempo: {formatTime(timeLeftMap[leito.id])}
+                    </li>
+                  </ul>
+                  <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
+                    Trocar
+                  </button>
+
+                  {showOptionsModal && (
+                    <div className="modal-overlay" onClick={handleCloseOptionsModal}>
+                      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <span className="close-button" onClick={handleCloseOptionsModal}>
+                          &times;
+                        </span>
+                        <h2 className="text-black">Escolher opção</h2>
+                        <form
+                          className="mt-4"
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleConfirmPosition(leito.id);
+                          }}
+                        >
+                          <div className="flex flex-col text-white">
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Dorsal"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Dorsal
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Ventral"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Ventral
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Lateral Direito"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Lateral Direito
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Lateral Esquerdo"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Lateral Esquerdo
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name="position"
+                                value="Decúbito Prona"
+                                onChange={(e) => setSelectedPosition(e.target.value)}
+                              /> Decúbito Prona
+                            </label>
+                            <button type="submit" className="bg-white text-black p-2 rounded-md mt-4">Confirmar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        ))
+      ) :  (
         <p>Carregando leitos...</p>
       )}
     </div>
