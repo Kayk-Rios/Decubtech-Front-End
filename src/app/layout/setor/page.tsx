@@ -9,14 +9,17 @@ import Entrar from "@/components/Ui/Entrar";
 interface Setor {
   id: number;
   name: string;
+  nome: string;
 }
 
 export default function Setor() {
   const [setores, setSetores] = useState<Setor[]>([]); 
+  const [externalSetores, setExternalSetores] = useState<Setor[]>([]); 
   const [selectedSetor, setSelectedSetor] = useState<string>("");
+  const [selectedExternalSetor, setSelectedExternalSetor] = useState<string>("");
 
   const userId = Cookies.get("userId");
-
+  const username = Cookies.get("username");
   
   useEffect(() => {
     
@@ -32,14 +35,35 @@ export default function Setor() {
     } else {
       console.log("User ID não encontrado nos cookies");
     }
-  }, [userId]);
 
-  const handleSetorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const setorId = event.target.value; 
-    setSelectedSetor(setorId);
+    if (username) {
+      axios
+        .post('https://superb-adventure-production.up.railway.app/external/setores', { username })
+        .then((response) => {
+          console.log(response.data);
+          setExternalSetores(response.data);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar setores externos:", error);
+        });
+    } else {
+      console.log("Username não encontrado nos cookies");
+    }
+
+  }, [userId, username]);
+
+  const handleSetorChange = (isExternal: boolean) => (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const setorId = event.target.value;
     
-   
-    Cookies.set('selectedSetor', setorId); 
+    if (isExternal) {
+      setSelectedExternalSetor(setorId);
+      Cookies.set('selectedExternalSetor', setorId);
+      Cookies.remove('selectedSetor');
+    } else {
+      setSelectedSetor(setorId);
+      Cookies.set('selectedSetor', setorId); 
+      Cookies.remove('selectedExternalSetor'); 
+    }
   };
 
   return (
@@ -54,7 +78,7 @@ export default function Setor() {
               <select
                 className="p-2 border rounded setor"
                 value={selectedSetor} 
-                onChange={handleSetorChange} 
+                onChange={handleSetorChange(false)} 
               >
                 <option value=""   >Selecione um setor</option>
                 {setores.map((setor) => (
@@ -64,6 +88,20 @@ export default function Setor() {
                 ))}
               </select>
             )}
+              <h3>Setores Externos:</h3>
+              
+                <select
+                  className=" border rounded setor w-[310px] appearance-none"
+                  value={selectedExternalSetor}
+                  onChange={handleSetorChange(true)} 
+                >
+                  <option value="" className="w-[310px]">Selecione um setor externo</option>
+                  {externalSetores.map((setor) => (
+                    <option key={`ext-${setor.id}`} value={setor.id} className="w-[210px]">
+                      {setor.nome}
+                    </option>
+                  ))}
+                </select>
           </div>
         
         <Link href='/layout/paciente'>
