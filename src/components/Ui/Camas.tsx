@@ -31,7 +31,7 @@ export default function ImagePosicoes() {
     const setorId = Cookies.get('selectedSetor');
     if (setorId) {
       // Faz a requisição para obter os leitos do setor selecionado
-      axios.get(`https://back-end-decubtech.onrender.com/leitos/setor/${setorId}`)
+      axios.get(`https://superb-adventure-production.up.railway.app/leitos/setor/${setorId}`)
         .then(response => {
           setLeitos(response.data); // Atualiza o estado com os leitos retornados pela API
         })
