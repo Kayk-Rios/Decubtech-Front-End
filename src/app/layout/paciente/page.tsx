@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie"; // Importando o Cookies para acessar o valor do setorId
+import Cookies from "js-cookie";
 import Menu from "@/components/templates/Menu";
 import Pagina from "@/components/templates/Pagina";
 import { logout } from '@/cookies' 
@@ -10,49 +10,47 @@ import Link from "next/link";
 import ImagePosicoes from "@/components/Ui/Camas";
 
 export default function PacientePagina() {
-  const [number, setNumber] = useState(""); // Estado para o número do leito
-  const [showModal, setShowModal] = useState(false); // Controle da visibilidade do modal
-
+  const [number, setNumber] = useState(""); 
+  const [showModal, setShowModal] = useState(false);
   const handleLogout = () => {
     logout();
     window.location.href = "/";
   };
 
-  // Função para lidar com a requisição POST
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // Previne o comportamento padrão do formulário (recarregar página)
 
-    const setorId = Cookies.get('selectedSetor'); // Obtendo o setorId do cookie
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); 
+
+    const setorId = Cookies.get('selectedSetor'); 
 
     if (!setorId) {
       console.error("Setor não encontrado no cookie.");
-      return; // Se o setorId não estiver no cookie, exibe erro
+      return; 
     }
 
     const data = {
       number: number,
-      setorId: parseInt(setorId) // Convertendo setorId para número
+      setorId: parseInt(setorId) 
     };
 
     try {
-      // Envia a requisição POST
+     
       const response = await axios.post(
         "https://superb-adventure-production.up.railway.app/leitos",
         data
       );
-      console.log("Leito criado:", response.data); // Exibe a resposta no console
-      setShowModal(false); // Fecha o modal após sucesso
+      console.log("Leito criado:", response.data); 
+      setShowModal(false); 
     } catch (error) {
-      console.error("Erro ao criar leito:", error); // Lida com erros de requisição
+      console.error("Erro ao criar leito:", error); 
     }
   };
 
-  // Função para abrir o modal
   const handleOpenModal = () => {
     setShowModal(true);
   };
 
-  // Função para fechar o modal
+  
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -72,7 +70,7 @@ export default function PacientePagina() {
           </div>
 
           <div className="mt-5">
-            {/* Modal de Criação de Leito */}
+        
             {showModal && (
               <div className="modal-overlay" onClick={handleCloseModal}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -98,7 +96,7 @@ export default function PacientePagina() {
               </div>
             )}
 
-            {/* Exibindo a lógica de imagem */}
+      
             <ImagePosicoes />
           </div>
         </Pagina>
