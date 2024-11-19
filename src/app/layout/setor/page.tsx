@@ -28,6 +28,8 @@ export default function Setor() {
         .get(`https://superb-adventure-production.up.railway.app/setores/${userId}`) 
         .then((response) => {
           setSetores(response.data);
+          const nomesSetores = response.data.map((setor: Setor) => setor.name);
+          localStorage.setItem('nomesSetores', JSON.stringify(nomesSetores));
         })
         .catch((error) => {
           console.error("Erro ao buscar setores:", error);
@@ -40,8 +42,9 @@ export default function Setor() {
       axios
         .post('https://superb-adventure-production.up.railway.app/external/setores', { username })
         .then((response) => {
-          console.log(response.data);
           setExternalSetores(response.data);
+          const nomesSetoresExternos = response.data.map((setor: Setor) => setor.nome);
+          localStorage.setItem('nomesSetoresExternos', JSON.stringify(nomesSetoresExternos));
         })
         .catch((error) => {
           console.error("Erro ao buscar setores externos:", error);
@@ -53,16 +56,20 @@ export default function Setor() {
   }, [userId, username]);
 
   const handleSetorChange = (isExternal: boolean) => (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const setorId = event.target.value;
-    
+    const selectedOption = event.target.options[event.target.selectedIndex];
+    const setorId = selectedOption.value;
+    const setorNome = selectedOption.text;
+  
     if (isExternal) {
       setSelectedExternalSetor(setorId);
       Cookies.set('selectedExternalSetor', setorId);
       Cookies.remove('selectedSetor');
+      localStorage.setItem('selectedExternalSetorNome', setorNome); // Armazenar no localStorage
     } else {
       setSelectedSetor(setorId);
       Cookies.set('selectedSetor', setorId); 
       Cookies.remove('selectedExternalSetor'); 
+      localStorage.setItem('selectedSetorNome', setorNome); // Armazenar no localStorage
     }
   };
 
