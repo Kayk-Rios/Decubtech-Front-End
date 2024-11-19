@@ -27,12 +27,12 @@ export default function PacientePagina() {
 
    
     if (selectedSetorId) {
-      const setor = nomesSetores.find((nome, index) => index + 1 === parseInt(selectedSetorId)); 
+      const setor = nomesSetores.find((nome: string, index : number) => index + 1 === parseInt(selectedSetorId)); 
       if (setor) {
         setSelectedSetorNome(`Setor Interno: ${setor}`);
       }
     } else if (selectedExternalSetorId) {
-      const setorExterno = nomesSetoresExternos.find((nome, index) => index + 1 === parseInt(selectedExternalSetorId));
+      const setorExterno = nomesSetoresExternos.find((nome: string, index : number) => index + 1 === parseInt(selectedExternalSetorId));
       if (setorExterno) {
         setSelectedSetorNome(`Setor Externo: ${setorExterno}`);
         setIsExternalSetor(true);
