@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Menu from "@/components/templates/Menu";
@@ -12,6 +12,35 @@ import ImagePosicoes from "@/components/Ui/Camas";
 export default function PacientePagina() {
   const [number, setNumber] = useState(""); 
   const [showModal, setShowModal] = useState(false);
+  const [selectedSetorNome, setSelectedSetorNome] = useState("");
+  const [isExternalSetor, setIsExternalSetor] = useState(false);
+
+
+  useEffect(() => {
+    
+    const nomesSetores = JSON.parse(localStorage.getItem('nomesSetores') || '[]');
+    const nomesSetoresExternos = JSON.parse(localStorage.getItem('nomesSetoresExternos') || '[]');
+
+   
+    const selectedSetorId = Cookies.get('selectedSetor');
+    const selectedExternalSetorId = Cookies.get('selectedExternalSetor');
+
+   
+    if (selectedSetorId) {
+      const setor = nomesSetores.find((nome, index) => index + 1 === parseInt(selectedSetorId)); 
+      if (setor) {
+        setSelectedSetorNome(`Setor Interno: ${setor}`);
+      }
+    } else if (selectedExternalSetorId) {
+      const setorExterno = nomesSetoresExternos.find((nome, index) => index + 1 === parseInt(selectedExternalSetorId));
+      if (setorExterno) {
+        setSelectedSetorNome(`Setor Externo: ${setorExterno}`);
+        setIsExternalSetor(true);
+      }
+    }
+  }, []);
+
+
   const handleLogout = () => {
     logout();
     window.location.href = "/";
@@ -59,9 +88,12 @@ export default function PacientePagina() {
     <>
       <div>
         <Pagina>
-          <div  onClick={handleOpenModal}>
-            <Entrar destino="Adicionar Leito" className=" flex text-slate-200 justify-center bg-pink-400 mt-[4%] ml-[2%]" />
-          </div>
+        {!isExternalSetor && (
+            <div onClick={handleOpenModal}>
+              <Entrar destino="Adicionar Leito" className="flex text-slate-200 justify-center bg-pink-400 mt-[4%] ml-[2%]" />
+            </div>
+          )}
+          <h2 className="bg-pink-400 w-[300px] rounded-full text-white text-center m-8">{selectedSetorNome || "Nenhum setor selecionado"}</h2>
           <div className="flex flex-col w-16 ml-[83%] gap-3">
             <Menu />
             <Link href="/" className=" mb-10">
@@ -70,7 +102,7 @@ export default function PacientePagina() {
           </div>
 
           <div className="mt-5">
-        
+         
             {showModal && (
               <div className="modal-overlay" onClick={handleCloseModal}>
                 <div className="modal-content" onClick={(e) => e.stopPropagation()}>
