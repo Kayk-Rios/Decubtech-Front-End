@@ -1,3 +1,4 @@
+
 'use client';
 import Image from "next/image";
 import ImagemCama1 from "@/assets/Cama1.png";
@@ -187,7 +188,7 @@ export default function ImagePosicoes() {
                     </li>
                   </ul>
                   <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
-                    Trocar
+                    Trocar posições
                   </button>
 
                  
@@ -284,7 +285,7 @@ export default function ImagePosicoes() {
                     </li>
                   </ul>
                   <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
-                    Trocar
+                    Trocar posições 
                   </button>
 
                   {showOptionsModal && (
