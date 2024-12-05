@@ -12,8 +12,11 @@ Projeto desenvolvido para inclusão nos hospitais do SUS com a proposta de uma f
 https://decubtech.netlify.app/
 
 Integrantes
+
 Kayk Dario - 01612869
+
 Vitor Cavalcante - 01655751
+
 João Gabriel  - 01616867
 
 ## Use para instala dependencias
