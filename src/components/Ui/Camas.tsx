@@ -187,7 +187,7 @@ export default function ImagePosicoes() {
                       Tempo: {formatTime(timeLeftMap[leito.id])}
                     </li>
                   </ul>
-                  <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
+                  <button className="bg-white btnn p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
                     Trocar posições
                   </button>
 
@@ -284,7 +284,7 @@ export default function ImagePosicoes() {
                       Tempo: {formatTime(timeLeftMap[leito.id])}
                     </li>
                   </ul>
-                  <button className="bg-white p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
+                  <button className="bg-white btnn p-2 rounded-md text-black" onClick={handleShowOptionsModal}>
                     Trocar posições 
                   </button>
 
