@@ -37,7 +37,7 @@ export default function ImagePosicoes() {
 
     if (selectedSetor) {
       // Requisição para leitos internos da nossa api
-      axios.get(`https://back-end-decubtech.onrender.com/leitos/setor/${selectedSetor}`)
+      axios.get(`https://api-production-45a1.up.railway.app/leitos/setor/${selectedSetor}`)
         .then(response => {
           setLeitos(response.data);
         })
@@ -47,7 +47,7 @@ export default function ImagePosicoes() {
     }
     if (selectedExternalSetor && username) {
       // Requisição para leitos externos internos da api de terceiros
-      axios.post(`https://back-end-decubtech.onrender.com/external/leitos/${selectedExternalSetor}`, { username })
+      axios.post(`https://api-production-45a1.up.railway.app/external/leitos/${selectedExternalSetor}`, { username })
         .then(response => {
           setExternalLeitos(response.data);
         })

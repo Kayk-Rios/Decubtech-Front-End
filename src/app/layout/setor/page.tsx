@@ -25,7 +25,7 @@ export default function Setor() {
     
     if (userId) {
       axios
-        .get(`https://back-end-decubtech.onrender.com/setores/${userId}`) 
+        .get(`https://api-production-45a1.up.railway.app/setores/${userId}`) 
         .then((response) => {
           setSetores(response.data);
           const nomesSetores = response.data.map((setor: Setor) => setor.name);
@@ -40,7 +40,7 @@ export default function Setor() {
 
     if (username) {
       axios
-        .post('https://back-end-decubtech.onrender.com/external/setores', { username })
+        .post('https://api-production-45a1.up.railway.app/external/setores', { username })
         .then((response) => {
           setExternalSetores(response.data);
           const nomesSetoresExternos = response.data.map((setor: Setor) => setor.nome);

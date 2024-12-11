@@ -65,7 +65,7 @@ export default function PacientePagina() {
     try {
      
       const response = await axios.post(
-        "https://back-end-decubtech.onrender.com/leitos",
+        "https://api-production-45a1.up.railway.app/leitos",
         data
       );
       console.log("Leito criado:", response.data); 
