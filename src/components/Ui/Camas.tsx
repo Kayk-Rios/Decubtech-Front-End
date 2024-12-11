@@ -81,12 +81,12 @@ export default function ImagePosicoes() {
     setVibrateCamaIds((prev) =>prev.filter((item) => item !== id)) 
     setPositionMap((prev) => ({ ...prev, [id]: selectedPosition })); 
     setSelectedPosition(null);
-    setTimeLeftMap((prev) => ({ ...prev, [id]: 60 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas
+    setTimeLeftMap((prev) => ({ ...prev, [id]: 30 })); // define o tempo restante para 60 para 1 min  / 7200 para  2 horas / 30 para 30 segundos
     alertSound.pause()
   
     setTimeout(() => {
       setVibrateCamaIds((prev) => [...prev, id]);
-    }, 60000);  // 60000 ms = 1 min / 7200000 2 horas
+    }, 30000);  // 60000 ms = 1 min / 7200000 2 horas / 30000 para 30 segundos 
   };
 
 
@@ -136,7 +136,7 @@ export default function ImagePosicoes() {
       return leitoImages.final;
     }
 
-    const totalTime = 60; // 60 para 1 min  / 120 para 2 horas
+    const totalTime = 30; // 60 para 1 min  / 120 para 2 horas / 30 para 30 segundos 
     const halfTime = totalTime / 2;
   
     if (timeLeft > halfTime) {
