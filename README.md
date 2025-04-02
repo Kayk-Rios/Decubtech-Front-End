@@ -11,6 +11,9 @@ Projeto desenvolvido para inclusão nos hospitais do SUS com a proposta de uma f
 ##Link projeto
 https://decubtech.netlify.app/
 
+###link Back-End
+https://github.com/Kayk-Rios/back_end_decubtech.git 
+
 Integrantes
 
 Kayk Dario - 01612869
